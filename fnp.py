@@ -9,7 +9,7 @@ from novaprinter import prettyPrinter
 import base64
 import json
 from urllib.request import Request, urlopen
-from urllib.parse import urlencode
+from urllib.parse import urlencode, unquote_plus
 from urllib.error import HTTPError
 import os
 from time import sleep
@@ -33,8 +33,8 @@ class HttpClient:
 
     def get(self, url, params=None):
         if params:
+            params = {k: unquote_plus(v) for k, v in params.items()}
             url += "?" + urlencode(params)
-            url = url.replace("%2520", "+")
         request = Request(url, headers=self.headers)
         try:
             with urlopen(request) as response:
